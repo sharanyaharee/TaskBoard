@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <TaskForm allTasks={allTasks} setAllTasks={setAllTasks} />
+      <TaskForm allTasks={allTasks}setAllTasks={setAllTasks} />
       <Board allTasks={allTasks} setAllTasks={setAllTasks} />
       <Footer />
     </div>
