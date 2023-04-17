@@ -1,4 +1,4 @@
-const data = { // Defining Data as an Array of Objects
+const data = { 
     categories: ["pending", "ongoing", "completed"],
     tasks: [
       {
