@@ -13,14 +13,14 @@ const Board = ({ allTasks, setAllTasks }) => {
     }
     setAllTasks(tempArray);
   };
-
-  const handleDelete = (taskIndex) => {
-    const deletedList = allTasks.filter((item, index) => {
-      return index !== taskIndex;
-    });
-    setAllTasks(deletedList);
+ 
+  const handleDelete = (item) => {
+    const index = allTasks.findIndex((eachTask) => eachTask.id === item.id);
+    const temporaryArray = [...allTasks];
+    temporaryArray.splice(index, 1);
+    setAllTasks(temporaryArray);
   };
-
+  
   return (
     <div id="taskBoard">
       <div className="taskColumn">
@@ -28,12 +28,11 @@ const Board = ({ allTasks, setAllTasks }) => {
           <h3>Pending</h3>
         </div>
         <div className="taskItems">
-          {" "}
+       
           {pendingItems.map((item, index) => (
             <div className="taskItem" key={index}>
               <p>{item.task}</p>
               <button className="taskButton move" onClick={() => handleMove(item)}>
-                {" "}
                 Move
               </button>
             </div>
@@ -49,7 +48,7 @@ const Board = ({ allTasks, setAllTasks }) => {
             <div className="taskItem" key={index}>
               <p>{item.task}</p>
               <button className="taskButton move" onClick={() => handleMove(item)}>
-                {" "}
+                
                 Move
               </button>
             </div>
@@ -64,8 +63,8 @@ const Board = ({ allTasks, setAllTasks }) => {
           {completedItems.map((item, index) => (
             <div className="taskItem" key={index}>
               <p>{item.task}</p>
-              <button className="taskButton delete" onClick={() => {handleDelete(index) }}>
-                {" "}
+              <button className="taskButton delete" onClick={() => {handleDelete(item) }}>
+              
                 Delete
               </button>
             </div>
