@@ -1,73 +1,45 @@
-import React from "react";
-import { useState } from "react";
-import { data } from "../utils/data";
-
-const Board = ({ pendingList, setPendingList }) => {
-  const [ongoingList, setOngoingList] = useState(data.tasks);
-  const [completedList, setCompletedList] = useState(data.tasks);
-
-  const pendingItems = pendingList.filter(
-    (item) => item.category === "pending"
-  );
-  const ongoingItems = ongoingList.filter(
-    (item) => item.category === "ongoing"
-  );
-  const completedItems = completedList.filter(
-    (item) => item.category === "completed"
-  );
-  //const [pendingList, setPendingList] = useState(data.tasks);
-  //const [allTask,setAllTask] = useState(data.tasks)
-  
-  const [pendingToOngoing,setPendingToOngoing] = useState(ongoingItems)
-  const [pendingListFiltered,setPendingListFiltered] = useState(pendingItems)
-
-  
-
-  const handleDelete = (index) => {
-    const deletedList = completedItems.filter((item, i) => {
-      return i !== index;
+const Board = ({  // Props well received on Board Component ;)
+  pendingItems,
+  ongoingItems,
+  completedItems,
+  setCompletedItemList,
+  setPendingItemList,
+  setOngoingItemList,
+}) => {  
+  const handleDelete = (taskIndex) => { // Deleting Completed Task on Delete Button Click
+    const deletedList = completedItems.filter((item, index) => {
+      return index !== taskIndex; //  comparing the index of the item to be deleted with index of each item on completed Tasks Array using filter function.
     });
-    setCompletedList(deletedList);
-    console.log(completedList)
+    setCompletedItemList(deletedList); //  once both the index values found equal Filter function exits and the (rest of the ) unmatched index Tasks are stored to a new array
+  };//  on exit of filter function new Array is stored to updated completed Task State using its setter Function
+ 
+  const updatePendingStatus = (id, newStatus) => { // function defined to move Pending tasks to Ongoing Tasks state
+    let moveItems = pendingItems; // assigning Pending Task Array to a temp array
+    moveItems = moveItems.map((items) => { // mapping the temp array.
+      if (items.id === id) {  // once the array item id matches with the id of the item to be moved (ie. id which is received as function parameter) 
+        items.category = newStatus; // new status "ongoing" is assigned to the category key value
+        setOngoingItemList([...ongoingItems, items]); // updating the ongoing task state by adding new task to the existing ongoing tasks by spreading the ongoing tasks array
+      }
+      const remainingPendingList = pendingItems.filter((id) => {
+        return i !== id;
+      }); //  removing the moved task from Pending task array by sorting it out with filter function
+      setPendingItemList(remainingPendingList); // updating pending list item with remaining Array returned by filter function
+    });
   };
 
-  const updateStatus = (index) => {
-    const moveItem = pendingItems.filter((item, i) => {
-      return i !== index;
+  const updateOngoingStatus = (id, newStatus) => {  // function defined to move ongoing tasks to completed Tasks state
+    let moveItems = ongoingItems; // assigning ongoing Task Array to a temp array
+    moveItems = moveItems.map((items) => { // mapping the temp array.
+      if (items.id === id) {  // once the array item id matches with the id of the item to be moved (ie. id which is received as function parameter) 
+        items.category = newStatus; // new status "completed" is assigned to the category key value
+        setCompletedItemList([...completedItems, items]);  // updating the completed task state by adding newly moved task to the existing completed tasks by spreading the ongoing tasks array
+      }
+      const remainingOngoingList = ongoingItems.filter((id) => {
+        return i !== id;
+      });  //  removing the moved task from ongoing task array by sorting it out with filter function
+      setOngoingItemList(remainingOngoingList);// updating  ongoing task list item with remaining Array returned by filter function
     });
-    // setPendingToOngoing([{...pendingToOngoing,moveItem}])
-    setPendingListFiltered(moveItem)
-    // console.log(pendingListFiltered);
   };
-  // const moveItem = pendingList[index];
-  // setPendingList(pendingList.filter((task,i)=> i !== index))
-  // setOngoingList([...ongoingItems, moveItem]);
-
-  //   console.log(ongoingList)
-  // console.log(moveItem)}
-
-  // });
-  // setOngoingList([{...ongoingItems,moveItem}]);
-  //   let moveItems= pendingList;
-  // moveItems = moveItems.map(items=>{
-  //   if(items.id===id)
-  //   {items.category =newStatus
-  //     setCompletedList(...completedList, items)
-  //     }
-  //     return items
-  //  })
-
-  //  setOngoingList(...ongoingItems, )
-
-  //   const handleNewMove = (index) => {
-  //     const itemsMove = tasks[index];
-  //     setTasks(tasks.filter((task, i) => i !== index));
-  //     setOngoingTasks([...onGoingTasks, itemsMove]);
-  //     console.log(onGoingTasks);
-  //   };
-
-  //   console.log(ongoingItems);
-  // };
 
   return (
     <div id="taskBoard">
@@ -75,15 +47,13 @@ const Board = ({ pendingList, setPendingList }) => {
         <div className="columnHeader">
           <h3>Pending</h3>
         </div>
-        <div className="taskItems">
-          {pendingListFiltered.map((item, index) => (
-            <div className="taskItem" key={index}>
+        <div className="taskItems">   {/* mapping ongoing task items Array to destructure the taskName */}
+          {pendingItems.map((item, index) => (  
+            <div className="taskItem" key={index}> 
               <p>{item.task}</p>
-              <span>{item.category}</span>
               <button
                 className="taskButton move"
-                onClick={() => updateStatus(index)}
-              >
+                onClick={() => updatePendingStatus(item.id, "ongoing")} > {/* Button onClick evokes the updatePendingStatus function, passing task id and Status message as arguments */}
                 Move
               </button>
             </div>
@@ -95,10 +65,14 @@ const Board = ({ pendingList, setPendingList }) => {
           <h3>Ongoing</h3>
         </div>
         <div className="taskItems">
-          {pendingToOngoing.map((item, index) => (
+          {ongoingItems.map((item, index) => ( //mapping ongoing task items Array to destructure the taskName
             <div className="taskItem" key={index}>
               <p>{item.task}</p>
-              <button className="taskButton move">Move</button>
+              <button
+                className="taskButton move"
+                onClick={() => updateOngoingStatus(item.id, "completed")}>  {/* Button onClick evokes the updateOngoingStatus function, passing task id and status message as arguments */}
+                Move
+              </button>
             </div>
           ))}
         </div>
@@ -108,15 +82,14 @@ const Board = ({ pendingList, setPendingList }) => {
           <h3>Completed</h3>
         </div>
         <div className="taskItems">
-          {completedItems.map((item, index) => (
+          {completedItems.map((item, index) => ( //mapping completed task items Array to destructure the taskName
             <div className="taskItem" key={index}>
               <p>{item.task}</p>
               <button
                 className="taskButton delete"
                 onClick={() => {
                   handleDelete(index);
-                }}
-              >
+                }}>  {/* Button onClick evokes the delete function, passing task indexj as arguments */}
                 Delete
               </button>
             </div>
