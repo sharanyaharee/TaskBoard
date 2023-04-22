@@ -7,7 +7,7 @@ import {data} from '../utils/data'
         switch (type){
             case "MOVE_TASK": return [...state, payload] 
             case "DELETE_TASK":
-                return [ ...payload ]
+                return  payload 
             case "SUBMIT_TASK" : return [...state, payload]
             default:
                 return state;
