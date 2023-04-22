@@ -3,16 +3,21 @@ import Board from "./components/Board";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import TaskForm from "./components/TaskForm";
-import { data } from "./utils/data";
-import { useState } from "react";
+import TaskContextWrapper from "./contexts/taskContext";
+// import { data } from "./utils/data";
+// import { useState ,useContext} from "react";
 
 function App() {
-  const [allTasks, setAllTasks] = useState(data.tasks);
+  
+  // const [allTasks, setAllTasks] = useState(data.tasks);
   return (
     <div className="App">
+
       <Header />
-      <TaskForm allTasks={allTasks}setAllTasks={setAllTasks} />
-      <Board allTasks={allTasks} setAllTasks={setAllTasks} />
+      <TaskContextWrapper>
+      <TaskForm />
+      <Board  />
+      </TaskContextWrapper>
       <Footer />
     </div>
   );
